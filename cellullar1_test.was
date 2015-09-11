@@ -6,6 +6,7 @@ proc main
 	string commercial_code
 	integer mod_cell = 0
 	integer borrarEsta
+	integer siEstaNoSaleHaceBienElPull
 
 	set modem connection "direct-connect COM1"
 	set port baudrate 9600

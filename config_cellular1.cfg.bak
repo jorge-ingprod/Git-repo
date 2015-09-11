@@ -1,0 +1,101 @@
+; Showing Menu and Submenus Configuration for access-level 15 ...
+; M1Super Router * * Version 10.09.24
+
+   log-command-errors
+   no configuration
+   set hostname <QQQ>
+   set inactivity-timer disabled
+   set ignition-off-powerdown-timer 1440
+   feature vrf
+; -- VRF user configuration --
+      vrf switch
+      vrf wan
+   exit
+;
+;
+   add device direct-ip 1
+   add device direct-ip 2
+   add device eth-subinterface ethernet0/0 10
+   add device eth-subinterface ethernet0/0 20
+   add device eth-subinterface ethernet0/0 30
+   add device eth-subinterface ethernet0/0 40
+   set data-link at cellular0/0
+   set data-link at cellular0/1
+   set data-link at cellular1/0
+   set data-link at cellular2/0
+   set data-link nic cellular1/1
+   set data-link nic cellular2/1
+   global-profiles dial
+; -- Dial Profiles Configuration --
+      profile HSDPA default
+      profile HSDPA dialout
+      profile HSDPA local-address 1234
+      profile HSDPA 3gpp-apn movistar.es
+      profile HSDPA 3gpp-profile-number 3
+      profile HSDPA idle-time 3000
+   exit
+;
+;
+   network cellular1/0
+; -- Interface AT. Configuration  --
+      additional-control-command "+cgdcont=3,""IPV4V6"",""movistar.es"""
+      coverage-timer 10
+      no register-denied-reset
+      pin ciphered 0xFF52E0B46E781122
+;
+      registration-apn movistar.es pdp-type ipv4v6
+;
+      shutdown
+      record-changes enable
+      record-changes cell enable
+      record-changes cell samples 200
+      record-changes registration enable
+      record-changes plmn enable
+      record-changes technology enable
+      record-changes technology samples 200
+      record-changes coverage enable
+      record-changes coverage samples 200
+      record-changes call-state enable
+      record-changes sim enable
+      network mode automatic
+   exit
+;
+;
+   network direct-ip2
+; -- Generic Direct IP Encapsulation User Configuration --
+      ip address dhcp-negotiated
+;
+;
+      base-interface
+; -- Base Interface Configuration --
+         base-interface cellular1/1 link
+         base-interface cellular1/1 profile HSDPA
+      exit
+;
+;
+      direct-ip
+; -- Direct IP encapsulator user configuration --
+         address dhcp
+         authentication sent-user movistar ciphered-pwd 0x809103D9DBC73D2B4C7C7B1ACB92D345
+      exit
+   exit
+;
+;
+   event
+; -- ELS Config --
+      enable trace subsystem AT ALL
+      disable trace subsystem CELL ALL
+      ev-buffer 2000 200
+   exit
+;
+;
+   protocol ip
+; -- Internet protocol user configuration --
+      route 195.0.0.0 255.0.0.0 direct-ip2
+;
+      rule 2 local-ip direct-ip2 remote-ip any
+      rule 2 napt translation
+   exit
+;
+;
+   dump-command-errors

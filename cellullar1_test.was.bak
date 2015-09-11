@@ -28,7 +28,7 @@ proc main
 		
 	if fopen 0 "config_cellular1.cfg" READ TEXT
 		while not feof 0
-			
+			fgets
 		endwhile
 	else
 		errormsg "No puede abrirse el archivo"

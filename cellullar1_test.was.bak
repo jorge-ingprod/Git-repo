@@ -5,7 +5,11 @@ proc main
 
 	string commercial_code
 	integer mod_cell = 0
+<<<<<<< HEAD
 	integer borrarEsta
+	integer siEstaNoSaleHaceBienElPull
+=======
+>>>>>>> parent of d8d7054... add dialogsBox
 
 	set modem connection "direct-connect COM1"
 	set port baudrate 9600

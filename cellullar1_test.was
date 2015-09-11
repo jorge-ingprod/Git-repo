@@ -1,0 +1,58 @@
+
+;#include "_Comun.all\FUNC2.h"
+
+proc main
+
+	string commercial_code
+	integer mod_cell = 0
+
+	set modem connection "direct-connect COM1"
+	set port baudrate 9600
+	
+	; Solicito código comercial
+	dialogbox 0 8 20 460 126 2 "A T E N C I Ó N        S E L E C C I O N E      C Ó D I G O    C O M E R C I A L"
+   		editbox 4 40 88 150 16 commercial_code
+   		text 5 40 71 192 11 "INTRODUZCA EL CÓDIGO COMERIAL DEL PRODUCTO" left
+   		pushbutton 6 336 100 98 17 "C O N T I N U A R > > > >"
+	enddialog
+
+	waitForButton(6)
+	dlgdestroy 0 OK
+
+	if strcmp commercial_code "COD1"
+		mod_cell = 1
+	else
+		errormsg "No existe el código comercial"
+		return
+	endif
+		
+	if fopen 0 "config_cellular1.cfg" READ TEXT
+		while not feof 0
+			fgets
+		endwhile
+	else
+		errormsg "No puede abrirse el archivo"
+	endif
+
+endproc
+
+
+;***** waitForButton *****
+func waitForButton: integer
+	param integer id_boton
+	integer Event
+
+	while 1                 ; Loop forever.
+		dlgevent 0 Event        ; Get dialog event.
+		switch Event            ; Evaluate the event.
+	      case id_boton
+			exitwhile            ; Se ha pulsado el boton.
+	      endcase
+	      default
+	      endcase
+		endswitch
+	endwhile
+
+	return 0
+
+endfunc
